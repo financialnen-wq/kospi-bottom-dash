@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KOSPI 바닥 수급 신호</title>
+<meta name="description" content="과거 KOSPI 급락 바닥 22회와 지금의 수급 신호를 같은 잣대로 비교합니다.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#F2F4F7; --panel:#FFFFFF; --ink:#191F28; --ink2:#4E5968; --ink3:#8B95A1; --line:#E6E9EE; --line2:#F1F3F6;
+  --y:#FFBC00; --y-ink:#5C4400; --y-soft:#FFF6D6; --navy:#191F28;
+  --up:#E5484D; --down:#2F6FED; --chip:#F2F4F7; --ok:#12A16A; --ok-soft:#E3F6EE;
+  --past:rgba(139,149,161,.38); --band:rgba(47,111,237,.10);
+  --r:16px; --sh:0 1px 2px rgba(16,24,40,.04),0 6px 20px rgba(16,24,40,.05);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1216; --panel:#171B21; --ink:#F2F4F7; --ink2:#B4BCC7; --ink3:#7E8896; --line:#252B33; --line2:#1E232A;
+  --y:#FFC72C; --y-ink:#FFE08A; --y-soft:#2E2810; --navy:#F2F4F7; --chip:#1E232A;
+  --up:#FF6B6B; --down:#6EA0FF; --ok:#3DD68C; --ok-soft:#10291E;
+  --past:rgba(126,136,150,.40); --band:rgba(110,160,255,.14); --sh:0 1px 2px rgba(0,0,0,.4);}}
+:root[data-theme="dark"]{
+  --bg:#0F1216; --panel:#171B21; --ink:#F2F4F7; --ink2:#B4BCC7; --ink3:#7E8896; --line:#252B33; --line2:#1E232A;
+  --y:#FFC72C; --y-ink:#FFE08A; --y-soft:#2E2810; --navy:#F2F4F7; --chip:#1E232A;
+  --up:#FF6B6B; --down:#6EA0FF; --ok:#3DD68C; --ok-soft:#10291E;
+  --past:rgba(126,136,150,.40); --band:rgba(110,160,255,.14); --sh:0 1px 2px rgba(0,0,0,.4);}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.55 Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 28px 56px}
+.num{font-variant-numeric:tabular-nums}
+h2{font-size:19px;letter-spacing:-.02em;margin:40px 0 4px}
+h2+p.sub{margin:0 0 16px;color:var(--ink3);font-size:13px}
+.card{background:var(--panel);border-radius:var(--r);box-shadow:var(--sh);padding:22px}
+/* 히어로 */
+.hero{background:linear-gradient(135deg,#1A2230,#2D3B57);color:#fff;border-radius:var(--r);padding:28px 30px;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:24px;align-items:end}
+.hero h1{margin:0 0 6px;font-size:26px;letter-spacing:-.03em}
+.hero .lead{margin:0;color:rgba(255,255,255,.78);font-size:14px}
+.hero .k small{display:block;color:rgba(255,255,255,.62);font-size:12.5px;margin-bottom:2px}
+.hero .k b{font-size:32px;font-weight:700;letter-spacing:-.03em}
+.hero .k span{display:block;color:rgba(255,255,255,.62);font-size:12.5px;margin-top:2px}
+.hero .k .ychip,.ychip{display:inline-block;margin-top:0;background:var(--y);color:#3A2B00;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;margin-left:6px;vertical-align:2px}
+.meta{margin:12px 2px 0;color:var(--ink3);font-size:12.5px}
+/* 신호 카드 */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sig h3{margin:0;font-size:15.5px;letter-spacing:-.01em;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.sig .desc{color:var(--ink3);font-size:12.5px;margin:4px 0 12px;min-height:38px}
+.st{flex:none;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;background:var(--chip);color:var(--ink2)}
+.st.on{background:var(--ok-soft);color:var(--ok)}
+.st.near{background:var(--y-soft);color:var(--y-ink)}
+.vals{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 16px;align-items:end;margin-bottom:6px}
+.vals .now{font-size:26px;font-weight:700;letter-spacing:-.03em;white-space:nowrap;line-height:1.1}
+.vals .cmp{white-space:nowrap}
+.vals small{color:var(--ink3);font-size:12px;display:block}
+.vals .cmp{font-size:15px;font-weight:600;color:var(--ink2)}
+.lab{font-size:11.5px;color:var(--ink3);margin:10px 0 2px}
+svg.strip,svg.spark{width:100%;display:block;overflow:visible}
+.bt{margin-top:10px;padding-top:10px;border-top:1px solid var(--line2);font-size:12.5px;color:var(--ink2)}
+/* 차트 */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.six{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.chart{position:relative;height:340px}
+.chart.sm{height:210px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--ink2);margin:0 0 10px}
+.legend i{display:inline-block;width:18px;height:0;border-top:2px solid;vertical-align:4px;margin-right:6px}
+.legend i.band{height:10px;border:0;background:var(--band);vertical-align:-1px}
+.fl h3{margin:0 0 2px;font-size:14.5px}
+.fl p{margin:0 0 8px;font-size:12px;color:var(--ink3)}
+/* 표 */
+.tbl{overflow-x:auto;padding:8px 8px 4px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{color:var(--ink3);font-weight:600;text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line2);white-space:nowrap;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child,th:last-child,td:last-child{text-align:left}
+tr:hover td{background:var(--chip)}
+tr.cur td{font-weight:700}
+.pos{color:var(--up)} .neg{color:var(--down)}
+.tag{display:inline-block;background:var(--chip);border-radius:999px;padding:1px 8px;margin:1px 3px 1px 0;font-size:11.5px;color:var(--ink2);font-weight:500}
+.notes{font-size:13px;color:var(--ink2)}
+.notes li{margin:4px 0}
+footer{margin-top:28px;color:var(--ink3);font-size:12px}
+@media (max-width:1000px){.hero{grid-template-columns:1fr 1fr}.grid,.six{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
+@media (max-width:640px){.wrap{padding:12px 16px 40px}.hero{grid-template-columns:1fr;padding:22px}.grid,.six{grid-template-columns:1fr}.chart{height:280px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero" id="hero"></section>
+  <p class="meta" id="meta"></p>
+
+  <h2>신호별 과거 바닥 vs 지금</h2>
+  <p class="sub">점 하나 = 과거 급락 바닥 1회(바닥일 포함 직전 10거래일 중 가장 극단값) · 굵은 표시 = 지금 · 점선 = 신호 기준</p>
+  <div class="grid" id="sigs"></div>
+
+  <h2>낙폭 경로</h2>
+  <p class="sub">직전 1년 고점 = 100, 가로축은 고점 이후 거래일. 회색 점 = 과거 바닥 지점</p>
+  <div class="card">
+    <div class="legend"><span><i style="border-color:var(--ink)"></i>지금</span><span><i style="border-color:var(--ink3)"></i>과거 급락 22회</span></div>
+    <div class="chart"><canvas id="ddc"></canvas></div>
+  </div>
+
+  <h2>바닥 전후 수급 흐름</h2>
+  <p class="sub">평소 하루치 순매수의 몇 배인지를 누적. 과거는 바닥일 = 0, 지금은 오늘 = 0으로 맞춤· 선이 오른쪽으로 내려가면 순매도, 올라가면 순매수</p>
+  <div class="card" style="margin-bottom:16px;padding:14px 22px">
+    <div class="legend" style="margin:0"><span><i style="border-color:var(--ink)"></i>지금(최근 60거래일)</span><span><i style="border-color:var(--down)"></i>과거 22회 평균</span><span><i class="band"></i>과거 22회 중간 50%</span></div>
+  </div>
+  <div class="six" id="flows"></div>
+
+  <h2>과거 급락 바닥 22회</h2>
+  <p class="sub">고점 대비 -15% 이상 하락 후 앞뒤 60거래일 중 최저 종가. 켜진 신호 = 바닥 20거래일 전 ~ 5거래일 후 사이에 충족된 신호</p>
+  <div class="card tbl"><table id="eps"></table></div>
+
+  <h2>읽는 법</h2>
+  <div class="card notes"><ul id="notes"></ul></div>
+  <footer>KRX 정보데이터시스템·금융투자협회 FreeSIS 공개 통계로 계산한 참고 자료이며, 투자 권유가 아닙니다. 과거 통계는 앞으로의 결과를 보장하지 않습니다.</footer>
+</div>
+<script>
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const f=(x,d=1)=>x==null?'–':(x>0?'+':'')+x.toFixed(d);
+const fu=(x,u,d=1)=>x==null?'–':u==='%'?f(x,d)+'%':u==='z'?f(x,2):f(x,d)+'배';
+const ST={on:'충족',near:'근접',off:'미충족'};
+let D, charts=[];
+
+function hero(){
+  const n=D.now, on=D.signals.filter(s=>s.status==='on').length, near=D.signals.filter(s=>s.status==='near').length;
+  document.getElementById('hero').innerHTML=`
+   <div><h1>KOSPI 바닥 수급 신호</h1><p class="lead">과거 급락 바닥 22회(2000~2025)에서 나타난 수급 조건을 지금과 같은 잣대로 비교합니다.</p></div>
+   <div class="k"><small>KOSPI${D.intraday?'<span class="ychip">장중</span>':''}</small><b class="num">${n.kospi.toLocaleString('ko-KR',{maximumFractionDigits:2})}</b><span>${D.asof}</span></div>
+   <div class="k"><small>고점 대비</small><b class="num">${f(n.dd)}%</b><span>${n.peak_d} 고점 ${n.peak.toLocaleString()} · ${n.days}거래일째 · 과거 바닥 낙폭 중앙값 ${n.dd_med}%</span></div>
+   <div class="k"><small>바닥 신호</small><b class="num">${on} / ${D.signals.length}</b><span>충족 ${on}개 · 근접 ${near}개</span></div>`;
+  document.getElementById('meta').textContent=`데이터 기준: KRX ${D.asof}${D.intraday?'(장중 집계)':''} · 금융투자협회 ${D.kofia_asof}(하루 늦게 공표) · 갱신 ${D.generated} KST`;
+}
+
+function strip(s){
+  const W=300,Hh=58,pad=10, vs=s.past.map(p=>p.v).filter(v=>v!=null).concat([s.now,s.th].filter(v=>v!=null));
+  let lo=Math.min(...vs),hi=Math.max(...vs); const m=(hi-lo)*.06||1; lo-=m; hi+=m;
+  const X=v=>pad+(v-lo)/(hi-lo)*(W-2*pad);
+  const ink=css('--ink'),ink3=css('--ink3'),dn=css('--down'),ok=css('--ok');
+  let g=`<line x1="${X(s.th)}" x2="${X(s.th)}" y1="6" y2="${Hh-14}" stroke="${ink3}" stroke-dasharray="3 3"/>
+         <text x="${X(s.th)}" y="${Hh-2}" font-size="10" fill="${ink3}" text-anchor="middle">기준 ${fu(s.th,s.unit,s.unit==='z'?0:1)}</text>`;
+  s.past.forEach((p,i)=>{ if(p.v==null)return; const y=20+((i*7)%15);
+    g+=`<circle cx="${X(p.v)}" cy="${y}" r="4" fill="${ink3}" fill-opacity=".55" stroke="${css('--panel')}" stroke-width="1"><title>${p.d} 바닥: ${fu(p.v,s.unit)}</title></circle>`;});
+  if(s.past_med!=null) g+=`<line x1="${X(s.past_med)}" x2="${X(s.past_med)}" y1="12" y2="${Hh-16}" stroke="${dn}" stroke-width="2"><title>과거 바닥 중앙값 ${fu(s.past_med,s.unit)}</title></line>`;
+  if(s.now!=null){const x=X(s.now),c=s.status==='on'?ok:ink;
+    g+=`<path d="M${x} 9 l7 14 l-7 14 l-7 -14z" fill="${c}" stroke="${css('--panel')}" stroke-width="2"><title>지금(${s.now_d}): ${fu(s.now,s.unit)}</title></path>`;}
+  return `<svg class="strip" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="${s.name} 과거 바닥 분포와 지금">${g}</svg>`;
+}
+
+function spark(s){
+  const W=300,Hh=56, h=s.hist, vs=h.filter(v=>v!=null).concat([s.th]);
+  let lo=Math.min(...vs),hi=Math.max(...vs); const m=(hi-lo)*.08||1; lo-=m; hi+=m;
+  const X=i=>i/(h.length-1)*W, Y=v=>Hh-4-(v-lo)/(hi-lo)*(Hh-8);
+  let d='',pen=false,last=null; h.forEach((v,i)=>{ if(v==null){pen=false;return;} d+=(pen?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1); pen=true; last=[i,v];});
+  const ink=css('--ink'),ink3=css('--ink3');
+  return `<svg class="spark" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="${s.name} 최근 1년">
+    <line x1="0" x2="${W}" y1="${Y(s.th)}" y2="${Y(s.th)}" stroke="${ink3}" stroke-dasharray="3 3"/>
+    <path d="${d}" fill="none" stroke="${ink}" stroke-width="1.6" stroke-linejoin="round"/>
+    ${last?`<circle cx="${X(last[0])}" cy="${Y(last[1])}" r="3.5" fill="${ink}"/>`:''}
+    <text x="0" y="${Hh+12}" font-size="10" fill="${ink3}">${D.hist_dates[0].slice(0,7)}</text>
+    <text x="${W}" y="${Hh+12}" font-size="10" fill="${ink3}" text-anchor="end">${s.now_d||''}</text></svg>`;
+}
+
+function sigs(){
+  document.getElementById('sigs').innerHTML=D.signals.map(s=>{
+    const b=s.bt;
+    return `<div class="card sig">
+      <h3>${s.name}<span class="st ${s.status}">${s.status==='on'?'✓ ':''}${ST[s.status]}</span></h3>
+      <p class="desc">${s.desc}</p>
+      <div class="vals"><div><small>지금 · ${s.now_d||'–'}</small><span class="now num">${fu(s.now,s.unit)}</span></div>
+        <div><small>과거 바닥 중앙값</small><span class="cmp num">${fu(s.past_med,s.unit)}</span></div>
+        <div><small>기준</small><span class="cmp num">${s.dir==='le'?'≤ ':'≥ '}${fu(s.th,s.unit,s.unit==='z'?0:1)}</span></div></div>
+      <div class="lab">과거 바닥 ${s.past.length}회 분포</div>${strip(s)}
+      <div class="lab" style="margin-top:12px">최근 1년 추이</div>${spark(s)}
+      <div class="bt">고점 대비 -15% 이하에서 신호 뒤 60일 평균 <b class="num">${f(b.fwd60)}%</b>(상승 ${b.win60??'–'}%, ${b.days}일)
+        · 같은 하락장 아무 날 ${f(D.base.fwd60)}%</div></div>`;}).join('');
+}
+
+const base={responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'nearest',intersect:false},
+  plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(25,31,40,.92)',padding:10,displayColors:false}}};
+const ax=(t)=>({grid:{display:false},border:{color:css('--line')},ticks:{color:css('--ink3'),font:{size:11},maxTicksLimit:8},title:t?{display:true,text:t,color:css('--ink3'),font:{size:11}}:undefined});
+const vline={id:'vline',afterDraw(c,_a,o){if(o.x==null)return;const x=c.scales.x.getPixelForValue(o.x),{top,bottom}=c.chartArea,g=c.ctx;
+  g.save();g.strokeStyle=css('--ink3');g.setLineDash([3,3]);g.beginPath();g.moveTo(x,top);g.lineTo(x,bottom);g.stroke();
+  g.setLineDash([]);g.fillStyle=css('--ink3');g.font='11px Pretendard';g.textAlign='left';g.fillText(o.label,x+4,top+10);g.restore();}};
+
+function ddChart(){
+  const ds=D.paths.map(p=>({label:p.t+' 바닥',data:p.y.map((y,i)=>({x:i,y})),borderColor:css('--past'),borderWidth:1.2,
+    pointRadius:c=>c.dataIndex===p.ttd?3.5:0,pointBackgroundColor:css('--ink3'),pointBorderColor:css('--panel'),pointHoverRadius:5,tension:.15}));
+  ds.push({label:'지금',data:D.cur_path.map((y,i)=>({x:i,y})),borderColor:css('--ink'),borderWidth:2.6,pointRadius:c=>c.dataIndex===D.cur_path.length-1?5:0,pointBackgroundColor:css('--ink'),tension:.15});
+  charts.push(new Chart(document.getElementById('ddc'),{type:'line',data:{datasets:ds},
+    options:{...base,parsing:true,scales:{x:{...ax('고점 이후 거래일'),type:'linear'},y:{...ax('고점 = 100')}},
+      plugins:{...base.plugins,tooltip:{...base.plugins.tooltip,mode:'nearest',intersect:false,
+        callbacks:{title:i=>i[0].dataset.label,label:i=>`고점 후 ${i.parsed.x}거래일 · ${i.parsed.y.toFixed(1)} (${(i.parsed.y-100).toFixed(1)}%)`}}}}}));
+}
+
+const FDESC={F_P_amtall:'과거엔 바닥 직전 20일에 크게 순매도, 바닥 뒤 멈춤',I_P_amt:'과거엔 바닥 직전에 개인이 풋을 몰아 샀음',F_spot:'과거엔 바닥까지 팔고 바닥 뒤 순매수 전환',
+  F_fut_amt:'과거엔 바닥 뒤 20일에 순매수로 돌아섬(22회 중 18회)',PEN_spot:'과거엔 내내 사고 바닥 직후 가장 많이 샀음',I_spot:'과거엔 바닥까지 사고 바닥 뒤 팔았음'};
+function flowCharts(){
+  const box=document.getElementById('flows'); box.innerHTML=D.flows.map((x,i)=>`<div class="card fl"><h3>${x.name}</h3><p>${FDESC[x.id]||''}</p><div class="chart sm"><canvas id="fc${i}"></canvas></div></div>`).join('');
+  const X=[...Array(121)].map((_,i)=>i-60);
+  D.flows.forEach((x,i)=>{
+    const pt=a=>a.map((y,j)=>({x:X[j],y}));
+    charts.push(new Chart(document.getElementById('fc'+i),{type:'line',plugins:[vline],data:{datasets:[
+      {label:'과거 상위 25%',data:pt(x.p75),borderWidth:0,pointRadius:0,fill:'+1',backgroundColor:css('--band')},
+      {label:'과거 하위 25%',data:pt(x.p25),borderWidth:0,pointRadius:0,fill:false},
+      {label:'과거 평균',data:pt(x.mean),borderColor:css('--down'),borderWidth:2,pointRadius:0},
+      {label:'지금',data:x.cur.map((y,j)=>({x:j-60,y})),borderColor:css('--ink'),borderWidth:2.4,pointRadius:0}]},
+      options:{...base,scales:{x:{...ax(),type:'linear',min:-60,max:60,ticks:{...ax().ticks,stepSize:20,callback:v=>v===0?'0':(v>0?'+'+v:v)}},y:{...ax()}},
+        plugins:{...base.plugins,vline:{x:0,label:'바닥 / 오늘'},tooltip:{...base.plugins.tooltip,mode:'index',intersect:false,
+          filter:i=>i.datasetIndex>=2,callbacks:{title:i=>`기준일 ${i[0].parsed.x>0?'+':''}${i[0].parsed.x}거래일`,label:i=>`${i.dataset.label} ${f(i.parsed.y)}배`}}}}}));
+  });
+}
+
+function table(){
+  const n=D.now, cur=D.signals.filter(s=>s.status==='on').map(s=>s.name);
+  const pc=v=>v==null?'–':`<span class="${v>0?'pos':v<0?'neg':''}">${f(v)}%</span>`;
+  let h=`<thead><tr><th>바닥일</th><th>고점일</th><th>고점</th><th>바닥</th><th>낙폭</th><th>고점→바닥</th><th>이후 20일</th><th>60일</th><th>120일</th><th>켜진 신호</th></tr></thead><tbody>`;
+  h+=`<tr class="cur"><td>지금(진행 중)</td><td>${n.peak_d}</td><td>${n.peak.toLocaleString()}</td><td>${n.kospi.toLocaleString()}</td><td>${f(n.dd)}%</td><td>${n.days}일+</td><td>–</td><td>–</td><td>–</td><td>${cur.map(t=>`<span class="tag">${t}</span>`).join('')||'–'}</td></tr>`;
+  D.episodes.slice().reverse().forEach(e=>{h+=`<tr><td>${e.trough}</td><td>${e.peak}</td><td>${e.peakv.toLocaleString()}</td><td>${e.low.toLocaleString()}</td><td>${f(e.dd)}%</td><td>${e.days}일</td><td>${pc(e.f20)}</td><td>${pc(e.f60)}</td><td>${pc(e.f120)}</td><td>${e.lit.map(t=>`<span class="tag">${t}</span>`).join('')||'–'}</td></tr>`;});
+  document.getElementById('eps').innerHTML=h+'</tbody>';
+}
+
+function notes(){
+  document.getElementById('notes').innerHTML=[
+    '수급 단위는 일별 순매수를 직전 1년 하루 평균 |순매수|로 나눈 값입니다. "-12.8배"는 평소 하루치의 12.8배를 팔았다는 뜻입니다.',
+    '외국인 옵션은 코스피200 월물과 위클리(목·월)를 합산한 금액 기준입니다. 투자자별 미결제약정이 공개되지 않아, 풋 순매도가 신규 매도인지 보유 풋 차익실현인지는 가르지 못합니다.',
+    '근접 = 기준값의 80% 이상까지 같은 방향으로 온 상태입니다. 외국인 현물·선물 전환은 바닥을 확인해 주는 후행 신호에 가깝습니다.',
+    '반대매매·신용융자·예탁금은 금융투자협회가 하루 늦게 공표해 KRX 수급보다 하루 이상 늦습니다. 장중 갱신분은 장 마감 뒤 확정치로 바뀝니다.',
+    `신호 뒤 60일 수익률은 고점 대비 -15% 이하였던 날만 모아 계산했고, 신호별 표본이 작아(바닥 3~17회) 방향과 순서 정도로 읽는 게 맞습니다.`,
+  ].map(t=>`<li>${t}</li>`).join('');
+}
+
+function render(){charts.forEach(c=>c.destroy());charts=[];hero();sigs();ddChart();flowCharts();table();notes();}
+fetch('data.json',{cache:'no-store'}).then(r=>r.json()).then(j=>{D=j;Chart.defaults.font.family='Pretendard,-apple-system,sans-serif';render();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);});
+</script>
+</body>
+</html>
