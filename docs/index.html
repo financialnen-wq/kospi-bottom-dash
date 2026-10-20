@@ -12,19 +12,19 @@
   --bg:#F2F4F7; --panel:#FFFFFF; --ink:#191F28; --ink2:#4E5968; --ink3:#8B95A1; --line:#E6E9EE; --line2:#F1F3F6;
   --y:#FFBC00; --y-ink:#5C4400; --y-soft:#FFF6D6; --navy:#191F28;
   --up:#E5484D; --down:#2F6FED; --chip:#F2F4F7; --ok:#12A16A; --ok-soft:#E3F6EE;
-  --past:rgba(139,149,161,.38); --band:rgba(47,111,237,.10);
+  --past:rgba(139,149,161,.38); --band:rgba(47,111,237,.10); --gold:#B7860B;
   --r:16px; --sh:0 1px 2px rgba(16,24,40,.04),0 6px 20px rgba(16,24,40,.05);
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0F1216; --panel:#171B21; --ink:#F2F4F7; --ink2:#B4BCC7; --ink3:#7E8896; --line:#252B33; --line2:#1E232A;
   --y:#FFC72C; --y-ink:#FFE08A; --y-soft:#2E2810; --navy:#F2F4F7; --chip:#1E232A;
   --up:#FF6B6B; --down:#6EA0FF; --ok:#3DD68C; --ok-soft:#10291E;
-  --past:rgba(126,136,150,.40); --band:rgba(110,160,255,.14); --sh:0 1px 2px rgba(0,0,0,.4);}}
+  --past:rgba(126,136,150,.40); --band:rgba(110,160,255,.14); --gold:#E0BC66; --sh:0 1px 2px rgba(0,0,0,.4);}}
 :root[data-theme="dark"]{
   --bg:#0F1216; --panel:#171B21; --ink:#F2F4F7; --ink2:#B4BCC7; --ink3:#7E8896; --line:#252B33; --line2:#1E232A;
   --y:#FFC72C; --y-ink:#FFE08A; --y-soft:#2E2810; --navy:#F2F4F7; --chip:#1E232A;
   --up:#FF6B6B; --down:#6EA0FF; --ok:#3DD68C; --ok-soft:#10291E;
-  --past:rgba(126,136,150,.40); --band:rgba(110,160,255,.14); --sh:0 1px 2px rgba(0,0,0,.4);}
+  --past:rgba(126,136,150,.40); --band:rgba(110,160,255,.14); --gold:#E0BC66; --sh:0 1px 2px rgba(0,0,0,.4);}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.55 Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1240px;margin:0 auto;padding:20px 28px 56px}
@@ -95,6 +95,13 @@ section[role=tabpanel][hidden]{display:none}
 .gauge .iqr{position:absolute;top:26px;height:12px;background:color-mix(in srgb,var(--down) 28%,transparent);border-radius:999px}
 .gauge .pd{position:absolute;top:28px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:var(--down);opacity:.55;box-shadow:0 0 0 1.5px var(--panel)}
 .gauge .nowm{position:absolute;top:14px;width:4px;height:36px;margin-left:-2px;border-radius:2px;background:var(--ink)}
+.gauge .cm{position:absolute;top:24px;width:14px;height:14px;margin-left:-7px;transform:rotate(45deg);background:var(--gold);box-shadow:0 0 0 2px var(--panel)}
+.gauge .cml{position:absolute;top:50px;transform:translateX(-50%);font-size:11.5px;font-weight:700;color:var(--gold);white-space:nowrap}
+.case table{font-size:13px}.case td,.case th{text-align:right}.case td:first-child,.case th:first-child{text-align:left}
+.case th.g{color:var(--gold)}.case td.g{font-weight:700}
+.case .story{margin:0 0 14px;font-size:14px;line-height:1.65;color:var(--ink2)}
+.case .story b{color:var(--ink)}
+tr.case td{background:color-mix(in srgb,var(--gold) 9%,transparent)}
 .gauge .nowl{position:absolute;top:-14px;transform:translateX(-50%);font-weight:800;font-size:15px;white-space:nowrap}
 .gauge .medl{position:absolute;top:50px;transform:translateX(-50%);font-size:11.5px;color:var(--down);white-space:nowrap}
 .gscale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin:0 8px}
@@ -158,8 +165,12 @@ th.sg{border-bottom:2px solid var(--line);color:var(--ink2)}
     <div class="card">
       <div class="gauge" id="gauge"></div>
       <div class="gscale"><span>0 평소</span><span>25</span><span>50</span><span>75</span><span>100 모든 신호 충족</span></div>
-      <div class="glegend"><span><i style="background:var(--ink)"></i>지금</span><span><i style="background:var(--down);opacity:.6"></i>과거 바닥 22회(바닥 직전 10거래일 최고점)</span><span><i style="background:color-mix(in srgb,var(--down) 28%,transparent)"></i>과거 바닥 중간 50% 구간</span></div>
+      <div class="glegend"><span><i style="background:var(--ink)"></i>지금</span><span><i style="background:var(--down);opacity:.6"></i>과거 바닥 22회(바닥 직전 10거래일 최고점)</span><span><i style="background:color-mix(in srgb,var(--down) 28%,transparent)"></i>과거 바닥 중간 50% 구간</span><span><i style="background:var(--gold);border-radius:2px;transform:rotate(45deg)"></i>이번 하락 1차 저점</span></div>
     </div>
+
+    <h2>이번 하락의 1차 저점 케이스</h2>
+    <p class="sub">앞뒤 60거래일 최저 규칙에선 빠진 저점입니다(그 뒤 더 낮은 저점이 나와서). 22회 통계에는 섞지 않고 따로 비교합니다</p>
+    <div class="card case" id="case"></div>
 
     <h2>3단계 체크리스트</h2>
     <p class="sub">과거 바닥은 대체로 ① 개인 투매 → ② 외국인 헤지 청산 → ③ 바닥 확인 순서로 신호가 켜졌습니다. 막대 = 기준까지 진행률 · 검은 세로선 = 신호 기준 · 파란 눈금 = 과거 바닥 중앙값</p>
@@ -176,7 +187,7 @@ th.sg{border-bottom:2px solid var(--line);color:var(--ink2)}
 
   <section role="tabpanel" id="p-sig" hidden>
     <h2>신호별 과거 바닥 vs 지금</h2>
-    <p class="sub">점 하나 = 과거 급락 바닥 1회(바닥일 포함 직전 10거래일 중 가장 극단값) · 굵은 표시 = 지금 · 점선 = 신호 기준</p>
+    <p class="sub">점 하나 = 과거 급락 바닥 1회(바닥일 포함 직전 10거래일 중 가장 극단값) · 검은 마름모 = 지금 · 금색 마름모 = 7/30 1차 저점 · 점선 = 신호 기준</p>
     <div class="grid" id="sigs"></div>
   </section>
 
@@ -184,13 +195,13 @@ th.sg{border-bottom:2px solid var(--line);color:var(--ink2)}
     <h2>낙폭 경로</h2>
     <p class="sub">직전 1년 고점 = 100, 가로축은 고점 이후 거래일. 회색 점 = 과거 바닥 지점</p>
     <div class="card">
-      <div class="legend"><span><i style="border-color:var(--ink)"></i>지금</span><span><i style="border-color:var(--ink3)"></i>과거 급락 22회</span></div>
+      <div class="legend"><span><i style="border-color:var(--ink)"></i>지금</span><span><i style="border-color:var(--ink3)"></i>과거 급락 22회</span><span><i style="width:10px;height:10px;border:0;background:var(--gold);transform:rotate(45deg);vertical-align:0"></i>7/30 1차 저점</span></div>
       <div class="chart"><canvas id="ddc"></canvas></div>
     </div>
     <h2>바닥 전후 수급 흐름</h2>
     <p class="sub">평소 하루치 순매수의 몇 배인지를 누적. 과거는 바닥일 = 0, 지금은 오늘 = 0으로 맞춤 · 선이 오른쪽으로 내려가면 순매도, 올라가면 순매수</p>
     <div class="card" style="margin-bottom:16px;padding:14px 22px">
-      <div class="legend" style="margin:0"><span><i style="border-color:var(--ink)"></i>지금(최근 60거래일)</span><span><i style="border-color:var(--down)"></i>과거 22회 평균</span><span><i class="band"></i>과거 22회 중간 50%</span></div>
+      <div class="legend" style="margin:0"><span><i style="border-color:var(--ink)"></i>지금(최근 60거래일)</span><span><i style="border-color:var(--down)"></i>과거 22회 평균</span><span><i class="band"></i>과거 22회 중간 50%</span><span><i style="border-color:var(--gold);border-top-style:dashed"></i>7/30 1차 저점 기준</span></div>
     </div>
     <div class="six" id="flows"></div>
   </section>
@@ -217,7 +228,7 @@ function hero(){
   document.getElementById('hero').innerHTML=`
    <div><h1>KOSPI 바닥 수급 신호</h1>
      <p class="verdict">바닥 근접도 <em>${S.score}점</em>, ${cmp}.</p>
-     <p class="lead" style="margin-top:6px">켜진 신호 ${lit.length}개${lit.length?'('+lit.map(s=>s.name).join(', ')+')':''} · 과거 바닥 무렵엔 보통 ${S.lit_med}개</p></div>
+     <p class="lead" style="margin-top:6px">켜진 신호 ${lit.length}개${lit.length?'('+lit.map(s=>s.name).join(', ')+')':''} · 과거 바닥 무렵엔 보통 ${S.lit_med}개${(D.cases||[]).map(c=>` · ${c.d.slice(5).replace('-','/')} 1차 저점 땐 ${c.score}점·${c.lit.length}개`).join('')}</p></div>
    <div class="k"><small>KOSPI${D.intraday?'<span class="ychip">장중</span>':''}</small><b class="num">${n.kospi.toLocaleString('ko-KR',{maximumFractionDigits:2})}</b><span>${D.asof}</span></div>
    <div class="k"><small>고점 대비</small><b class="num">${f(n.dd)}%</b><span>${n.peak_d} 고점 이후 ${n.days}거래일 · 과거 바닥 낙폭 중앙값 ${n.dd_med}%</span></div>
    <div class="k"><small>바닥 근접도</small><b class="num">${S.score}<span style="display:inline;font-size:16px;color:rgba(255,255,255,.62)"> / 100</span></b><span>과거 바닥 ${Math.min(...S.score_past.map(x=>x.v))}~${Math.max(...S.score_past.map(x=>x.v))}점</span></div>`;
@@ -229,6 +240,7 @@ function gauge(){
   let h=`<div class="track"></div><div class="rng" style="left:${v[0]}%;width:${v[v.length-1]-v[0]}%"></div><div class="iqr" style="left:${q(.25)}%;width:${q(.75)-q(.25)}%"></div>`;
   S.score_past.forEach(x=>h+=`<div class="pd" style="left:${x.v}%" title="${x.d} 바닥: ${x.v}점 · 켜진 신호 ${x.lit}개"></div>`);
   h+=`<div class="medl" style="left:${S.score_med}%">과거 바닥 중앙값 ${S.score_med}</div>`;
+  (D.cases||[]).forEach(c=>h+=`<div class="cm" style="left:${c.score}%" title="${c.d} 1차 저점: ${c.score}점"></div><div class="cml" style="left:${c.score}%">${c.d.slice(5).replace('-','/')} 저점 ${c.score}</div>`);
   h+=`<div class="nowm" style="left:${S.score}%" title="지금 ${S.score}점"></div><div class="nowl" style="left:${Math.max(4,S.score)}%">지금 ${S.score}</div>`;
   document.getElementById('gauge').innerHTML=h;
 }
@@ -258,18 +270,35 @@ function cal(){
   document.getElementById('cal').innerHTML=h;
 }
 
+function caseCard(){
+  const el=document.getElementById('case'); if(!D.cases||!D.cases.length){el.closest('.card').previousElementSibling.previousElementSibling.remove();el.closest('.card').previousElementSibling.remove();el.closest('.card').remove();return;}
+  const c=D.cases[D.cases.length-1], S=D.summary, md=c.d.slice(5).replace('-','/'), rebv=Math.round(c.low*(1+c.reb/100));
+  const now=D.signals.filter(s=>s.status==='on');
+  let h=`<p class="story"><b>${md} 저점 ${c.low.toLocaleString()}(${f(c.dd)}%)</b>에서 바닥 근접도는 <b>${c.score}점</b>으로 과거 바닥 중앙값(${S.score_med}점)을 넘었고, 신호 ${c.lit.length}개가 켜졌습니다. 이후 ${c.reb_days}거래일 동안 <b>${f(c.reb)}%</b> 반등(${c.reb_d.slice(5).replace('-','/')} ${rebv.toLocaleString()})했다가 다시 내려와, 지금 KOSPI는 ${md} 저점 대비 <b>${f(c.vs_low)}%</b> 수준입니다.</p>`;
+  h+=`<div class="tbl" style="padding:0"><table><thead><tr><th>항목</th><th class="g">${md} 1차 저점</th><th>지금</th><th>과거 바닥 22회 중앙값</th></tr></thead><tbody>`;
+  const r=(a,b,cc,d)=>h+=`<tr><td>${a}</td><td class="g num">${b}</td><td class="num">${cc}</td><td class="num">${d}</td></tr>`;
+  r('KOSPI',c.low.toLocaleString(),D.now.kospi.toLocaleString(),'–');
+  r('고점 대비',f(c.dd)+'%',f(D.now.dd)+'%',D.now.dd_med+'%');
+  r('고점 후 거래일',c.days+'일',D.now.days+'일',D.now.trough_days_med+'일');
+  r('바닥 근접도',c.score+'점',S.score+'점',S.score_med+'점');
+  r('켜진 신호 수',c.lit.length+'개',now.length+'개',S.lit_med+'개');
+  D.signals.slice().sort((a,b)=>a.stage-b.stage).forEach(s=>r(`<span class="ic ${c.lit.includes(s.name)?'on':''}" style="width:15px;height:15px;font-size:9px">${c.lit.includes(s.name)?'✓':''}</span>${s.name}`,fu(c.vals[s.id],s.unit),fu(s.now,s.unit),fu(s.past_med,s.unit)));
+  el.innerHTML=h+`</tbody></table></div><p class="sub" style="margin:10px 0 0">${md} 값 = 그날 포함 직전 10거래일 중 가장 극단값(과거 22회와 같은 방식). ✓ = 저점 20거래일 전 ~ 5거래일 후 사이 충족</p>`;
+}
+
 function matrix(){
   const ss=D.signals.slice().sort((a,b)=>a.stage-b.stage), S=D.summary, sp={};S.score_past.forEach(x=>sp[x.d]=x);
   const grp=[1,2,3].map(g=>`<th class="sg" colspan="${ss.filter(s=>s.stage===g).length}">${STG[g][0]}</th>`).join('');
   let h=`<thead><tr><th></th>${grp}<th></th></tr><tr><th>바닥일 (낙폭)</th>${ss.map(s=>`<th>${s.name.replace(/\(.*\)| 증감| 순매수( 전환)?/g,m=>m.includes('전환')?' 전환':'')}</th>`).join('')}<th>근접도</th></tr></thead><tbody>`;
   const row=(lab,lit,sc,cls)=>`<tr class="${cls||''}"><td>${lab}</td>${ss.map(s=>`<td><span class="dot ${lit.includes(s.name)?'on':''}" title="${s.name}"></span></td>`).join('')}<td style="text-align:left"><span class="sbar" style="width:${sc*.9}px"></span>${sc}</td></tr>`;
   h+=row(`지금 (${f(D.now.dd)}%)`,D.signals.filter(s=>s.status==='on').map(s=>s.name),S.score,'cur');
+  (D.cases||[]).forEach(c=>h+=row(`${c.d} (${f(c.dd)}%) 1차 저점`,c.lit,c.score,'case'));
   D.episodes.slice().reverse().forEach(e=>h+=row(`${e.trough} (${f(e.dd)}%)`,e.lit,sp[e.trough]?.v??0));
   document.getElementById('mx').innerHTML=h+'</tbody>';
 }
 
 function strip(s){
-  const W=300,Hh=58,pad=10, vs=s.past.map(p=>p.v).filter(v=>v!=null).concat([s.now,s.th].filter(v=>v!=null));
+  const W=300,Hh=58,pad=10, vs=s.past.map(p=>p.v).concat([s.now,s.th],(D.cases||[]).map(c=>c.vals[s.id])).filter(v=>v!=null);
   let lo=Math.min(...vs),hi=Math.max(...vs); const m=(hi-lo)*.06||1; lo-=m; hi+=m;
   const X=v=>pad+(v-lo)/(hi-lo)*(W-2*pad);
   const ink=css('--ink'),ink3=css('--ink3'),dn=css('--down'),ok=css('--ok');
@@ -278,6 +307,8 @@ function strip(s){
   s.past.forEach((p,i)=>{ if(p.v==null)return; const y=20+((i*7)%15);
     g+=`<circle cx="${X(p.v)}" cy="${y}" r="4" fill="${ink3}" fill-opacity=".55" stroke="${css('--panel')}" stroke-width="1"><title>${p.d} 바닥: ${fu(p.v,s.unit)}</title></circle>`;});
   if(s.past_med!=null) g+=`<line x1="${X(s.past_med)}" x2="${X(s.past_med)}" y1="12" y2="${Hh-16}" stroke="${dn}" stroke-width="2"><title>과거 바닥 중앙값 ${fu(s.past_med,s.unit)}</title></line>`;
+  (D.cases||[]).forEach(c=>{const v=c.vals[s.id]; if(v==null)return; const x=X(v);
+    g+=`<rect x="${x-5}" y="${Hh/2-14}" width="10" height="10" transform="rotate(45 ${x} ${Hh/2-9})" fill="${css('--gold')}" stroke="${css('--panel')}" stroke-width="1.5"><title>${c.d} 1차 저점: ${fu(v,s.unit)}</title></rect>`;});
   if(s.now!=null){const x=X(s.now),c=s.status==='on'?ok:ink;
     g+=`<path d="M${x} 9 l7 14 l-7 14 l-7 -14z" fill="${c}" stroke="${css('--panel')}" stroke-width="2"><title>지금(${s.now_d}): ${fu(s.now,s.unit)}</title></path>`;}
   return `<svg class="strip" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="${s.name} 과거 바닥 분포와 지금">${g}</svg>`;
@@ -322,6 +353,7 @@ const vline={id:'vline',afterDraw(c,_a,o){if(o.x==null)return;const x=c.scales.x
 function ddChart(){
   const ds=D.paths.map(p=>({label:p.t+' 바닥',data:p.y.map((y,i)=>({x:i,y})),borderColor:css('--past'),borderWidth:1.2,
     pointRadius:c=>c.dataIndex===p.ttd?3.5:0,pointBackgroundColor:css('--ink3'),pointBorderColor:css('--panel'),pointHoverRadius:5,tension:.15}));
+  (D.cases||[]).forEach(c=>ds.push({label:c.d+' 1차 저점',data:[{x:c.days,y:100+c.dd}],borderColor:css('--gold'),backgroundColor:css('--gold'),pointRadius:7,pointStyle:'rectRot',showLine:false}));
   ds.push({label:'지금',data:D.cur_path.map((y,i)=>({x:i,y})),borderColor:css('--ink'),borderWidth:2.6,pointRadius:c=>c.dataIndex===D.cur_path.length-1?5:0,pointBackgroundColor:css('--ink'),tension:.15});
   charts.push(new Chart(document.getElementById('ddc'),{type:'line',data:{datasets:ds},
     options:{...base,parsing:true,scales:{x:{...ax('고점 이후 거래일'),type:'linear'},y:{...ax('고점 = 100')}},
@@ -340,7 +372,8 @@ function flowCharts(){
       {label:'과거 상위 25%',data:pt(x.p75),borderWidth:0,pointRadius:0,fill:'+1',backgroundColor:css('--band')},
       {label:'과거 하위 25%',data:pt(x.p25),borderWidth:0,pointRadius:0,fill:false},
       {label:'과거 평균',data:pt(x.mean),borderColor:css('--down'),borderWidth:2,pointRadius:0},
-      {label:'지금',data:x.cur.map((y,j)=>({x:j-60,y})),borderColor:css('--ink'),borderWidth:2.4,pointRadius:0}]},
+      {label:'지금',data:x.cur.map((y,j)=>({x:j-60,y})),borderColor:css('--ink'),borderWidth:2.4,pointRadius:0},
+      ...(D.cases||[]).map(c=>({label:c.d.slice(5).replace('-','/')+' 1차 저점',data:c.flows[x.id].map((y,j)=>({x:j-60,y})),borderColor:css('--gold'),borderWidth:2,borderDash:[5,3],pointRadius:0}))]},
       options:{...base,scales:{x:{...ax(),type:'linear',min:-60,max:60,ticks:{...ax().ticks,stepSize:20,callback:v=>v===0?'0':(v>0?'+'+v:v)}},y:{...ax()}},
         plugins:{...base.plugins,vline:{x:0,label:'바닥 / 오늘'},tooltip:{...base.plugins.tooltip,mode:'index',intersect:false,
           filter:i=>i.datasetIndex>=2,callbacks:{title:i=>`기준일 ${i[0].parsed.x>0?'+':''}${i[0].parsed.x}거래일`,label:i=>`${i.dataset.label} ${f(i.parsed.y)}배`}}}}}));
@@ -352,6 +385,7 @@ function table(){
   const pc=v=>v==null?'–':`<span class="${v>0?'pos':v<0?'neg':''}">${f(v)}%</span>`;
   let h=`<thead><tr><th>바닥일</th><th>고점일</th><th>고점</th><th>바닥</th><th>낙폭</th><th>고점→바닥</th><th>이후 20일</th><th>60일</th><th>120일</th><th>켜진 신호</th></tr></thead><tbody>`;
   h+=`<tr class="cur"><td>지금(진행 중)</td><td>${n.peak_d}</td><td>${n.peak.toLocaleString()}</td><td>${n.kospi.toLocaleString()}</td><td>${f(n.dd)}%</td><td>${n.days}일+</td><td>–</td><td>–</td><td>–</td><td>${cur.map(t=>`<span class="tag">${t}</span>`).join('')||'–'}</td></tr>`;
+  (D.cases||[]).forEach(c=>{h+=`<tr class="case"><td>${c.d} (1차 저점)</td><td>${n.peak_d}</td><td>${n.peak.toLocaleString()}</td><td>${Math.round(c.low).toLocaleString()}</td><td>${f(c.dd)}%</td><td>${c.days}일</td><td>${pc(c.f20)}</td><td>${pc(c.f60)}</td><td>–</td><td>${c.lit.map(t=>`<span class="tag">${t}</span>`).join('')}</td></tr>`;});
   D.episodes.slice().reverse().forEach(e=>{h+=`<tr><td>${e.trough}</td><td>${e.peak}</td><td>${e.peakv.toLocaleString()}</td><td>${e.low.toLocaleString()}</td><td>${f(e.dd)}%</td><td>${e.days}일</td><td>${pc(e.f20)}</td><td>${pc(e.f60)}</td><td>${pc(e.f120)}</td><td>${e.lit.map(t=>`<span class="tag">${t}</span>`).join('')||'–'}</td></tr>`;});
   document.getElementById('eps').innerHTML=h+'</tbody>';
 }
@@ -375,7 +409,7 @@ function show(t){
   if(t==='eps'&&!done.eps){table();notes();done.eps=1}
   try{history.replaceState(null,'','#'+t)}catch(e){}
 }
-function render(){charts.forEach(c=>c.destroy());charts=[];for(const k in done)delete done[k];hero();gauge();stages();cal();matrix();
+function render(){charts.forEach(c=>c.destroy());charts=[];for(const k in done)delete done[k];hero();gauge();caseCard();stages();cal();matrix();
   const t=(location.hash||'#sum').slice(1);show(['sum','sig','cht','eps'].includes(t)?t:'sum');}
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>show(b.dataset.t));
 fetch('data.json',{cache:'no-store'}).then(r=>r.json()).then(j=>{D=j;Chart.defaults.font.family='Pretendard,-apple-system,sans-serif';render();

@@ -238,6 +238,36 @@ def main():
                          f20=r(fwd20.iloc[i] * 100, 1), f60=r(fwd60.iloc[i] * 100, 1),
                          f120=r((k.iloc[i + 120] / k.iloc[i] - 1) * 100, 1) if i + 120 < n else None, lit=lit))
 
+    # 이번 하락의 1차 저점: 고점 이후 그때까지의 최저가였고 그 뒤 15% 이상 반등한 날.
+    # 뒤에 더 낮은 저점이 60거래일 안에 나오면 위 22회 규칙에선 빠지므로 따로 케이스로 둔다(통계엔 안 섞음).
+    recent = []
+    a0 = pos[cpk]
+    for i in range(a0 + 1, n - 5):
+        if k.iloc[i] <= k.iloc[a0:i + 1].min() and dd.iloc[i] <= -0.15 and k.iloc[i + 1:].max() / k.iloc[i] - 1 >= 0.15:
+            recent.append(i)
+    # 같은 반등 전의 연속 신저가는 가장 낮은 날 하나만
+    recent = [i for i in recent
+              if k.iloc[i] <= k.iloc[i:i + int(np.argmax(k.iloc[i + 1:].values)) + 2].min()]
+    cases = []
+    for i in recent:
+        j = i + int(np.argmax(k.iloc[i + 1:].values)) + 1   # 이후 반등 고점
+        vals = {}
+        for sid, _n, _d, ser, _th, _dir, _u, _f, agg, _s in SIG:
+            w = ser.iloc[max(0, i - 9):i + 1].dropna()
+            vals[sid] = r(w.min() if agg == "min" else w.max()) if len(w) else None
+        seg_len = min(60, n - 1 - i)
+        cases.append(dict(
+            d=dates[i], low=r(k.iloc[i]), dd=r(dd.iloc[i] * 100, 1), days=i - a0,
+            score=r(score.iloc[max(0, i - 9):i + 1].max(), 0),
+            lit=[s["name"] for s in signals if on_flags[s["id"]].iloc[max(0, i - 20):i + 6].any()],
+            vals=vals, reb_d=dates[j], reb=r((k.iloc[j] / k.iloc[i] - 1) * 100, 1), reb_days=j - i,
+            f20=r(fwd20.iloc[i] * 100, 1) if pd.notna(fwd20.iloc[i]) else None,
+            f60=r(fwd60.iloc[i] * 100, 1) if pd.notna(fwd60.iloc[i]) else None,
+            vs_low=r((k.iloc[-1] / k.iloc[i] - 1) * 100, 1),
+            flows={c: [r(x, 1) for x in (lambda s: s - s[60])(N[c].iloc[i - 60:i + seg_len + 1].fillna(0).cumsum().values)]
+                   for c, _ in FLOWS},
+        ))
+
     now_kst = dt.datetime.now(KST)
     last = P.index[-1]
     intraday = last.date() == now_kst.date() and now_kst.time() < dt.time(15, 45)
@@ -248,7 +278,7 @@ def main():
                  days=n - 1 - pos[cpk], trough_days_med=int(np.median([p["ttd"] for p in paths])),
                  dd_med=r(np.median([e["dd"] for e in ep]) * 100, 1)),
         hist_dates=dates[hist_from:], hist_kospi=[r(x) for x in k.iloc[hist_from:]],
-        signals=signals, base=base, summary=summary, paths=paths, cur_path=cur_path, flows=flows, episodes=rows,
+        signals=signals, base=base, summary=summary, paths=paths, cur_path=cur_path, flows=flows, episodes=rows, cases=cases,
     )
     with open(OUT, "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
