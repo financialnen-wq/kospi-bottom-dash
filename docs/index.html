@@ -79,6 +79,64 @@ tr.cur td{font-weight:700}
 .notes{font-size:13px;color:var(--ink2)}
 .notes li{margin:4px 0}
 footer{margin-top:28px;color:var(--ink3);font-size:12px}
+
+/* 탭 */
+nav.tabs{display:flex;gap:4px;background:var(--panel);box-shadow:var(--sh);padding:4px;border-radius:999px;margin:18px 0 4px;width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
+nav.tabs button{border:0;background:none;border-radius:999px;padding:8px 16px;font:600 13.5px Pretendard,sans-serif;color:var(--ink2);cursor:pointer;flex:none}
+nav.tabs button[aria-selected="true"]{background:var(--navy);color:var(--panel)}
+section[role=tabpanel][hidden]{display:none}
+/* 한 줄 결론 */
+.verdict{font-size:19px;line-height:1.5;letter-spacing:-.02em;margin:8px 0 0;color:#fff;font-weight:600}
+.verdict em{font-style:normal;color:var(--y)}
+/* 근접도 게이지 */
+.gauge{position:relative;height:64px;margin:28px 8px 6px}
+.gauge .track{position:absolute;left:0;right:0;top:26px;height:12px;border-radius:999px;background:var(--chip)}
+.gauge .rng{position:absolute;top:26px;height:12px;background:var(--band);border-radius:999px}
+.gauge .iqr{position:absolute;top:26px;height:12px;background:color-mix(in srgb,var(--down) 28%,transparent);border-radius:999px}
+.gauge .pd{position:absolute;top:28px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:var(--down);opacity:.55;box-shadow:0 0 0 1.5px var(--panel)}
+.gauge .nowm{position:absolute;top:14px;width:4px;height:36px;margin-left:-2px;border-radius:2px;background:var(--ink)}
+.gauge .nowl{position:absolute;top:-14px;transform:translateX(-50%);font-weight:800;font-size:15px;white-space:nowrap}
+.gauge .medl{position:absolute;top:50px;transform:translateX(-50%);font-size:11.5px;color:var(--down);white-space:nowrap}
+.gscale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin:0 8px}
+.glegend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--ink2);margin-top:14px}
+.glegend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+/* 단계별 체크리스트 */
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.stage h3{margin:0;font-size:15.5px;display:flex;justify-content:space-between;align-items:center}
+.stage .cnt{font-size:13px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--chip);color:var(--ink2)}
+.stage .cnt.hit{background:var(--ok-soft);color:var(--ok)}
+.stage>p{margin:4px 0 6px;font-size:12.5px;color:var(--ink3)}
+.row{padding:12px 0 10px;border-top:1px solid var(--line2)}
+.row:first-of-type{border-top:0}
+.row .t{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;font-weight:600}
+.row .t span.v{font-weight:500;color:var(--ink2);font-size:12.5px;white-space:nowrap}
+.ic{display:inline-flex;width:18px;height:18px;border-radius:50%;align-items:center;justify-content:center;font-size:11px;font-weight:800;margin-right:6px;background:var(--chip);color:var(--ink3);vertical-align:1px}
+.ic.on{background:var(--ok);color:#fff}.ic.near{background:var(--y);color:#3A2B00}
+.bb{position:relative;height:10px;margin:9px 0 3px;border-radius:999px;background:var(--chip)}
+.bb .fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--ink3)}
+.bb .fill.on{background:var(--ok)}.bb .fill.near{background:var(--y)}
+.bb .thl{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);left:66.67%}
+.bb .pm{position:absolute;top:-3px;width:3px;height:16px;margin-left:-1.5px;border-radius:2px;background:var(--down)}
+.row small{font-size:11.5px;color:var(--ink3)}
+/* 신호 달력 */
+.cal{display:grid;grid-template-columns:150px 1fr;gap:5px 12px;align-items:center;font-size:12.5px}
+.cal .cells{display:grid;grid-template-columns:repeat(60,1fr);gap:2px}
+.cal .c{height:16px;border-radius:3px;background:var(--chip)}
+.cal .c.n{background:var(--y)}.cal .c.o{background:var(--ok)}.cal .c.x{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.cal .ax{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3)}
+.cal .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
+/* 바닥 매트릭스 */
+.mx{overflow-x:auto}
+.mx table{font-size:12.5px}
+.mx th{text-align:center;white-space:normal;font-size:11.5px;line-height:1.3;vertical-align:bottom;min-width:54px}
+.mx td{text-align:center}
+.mx td:first-child,.mx th:first-child{text-align:left}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--line)}
+.dot.on{background:var(--ok);box-shadow:none}
+.sbar{display:inline-block;height:8px;border-radius:999px;background:var(--down);vertical-align:1px;margin-right:6px}
+th.sg{border-bottom:2px solid var(--line);color:var(--ink2)}
+@media (max-width:1000px){.stages{grid-template-columns:1fr}}
+@media (max-width:640px){.hero{grid-template-columns:1fr 1fr 1fr!important;gap:16px 12px}.hero>div:first-child{grid-column:1/-1}.hero .k b{font-size:21px}.hero .k span{font-size:11px}.hero .k small{font-size:11.5px}.cal{grid-template-columns:96px 1fr}.cal .c{height:13px}.verdict{font-size:16.5px}}
 @media (max-width:1000px){.hero{grid-template-columns:1fr 1fr}.grid,.six{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
 @media (max-width:640px){.wrap{padding:12px 16px 40px}.hero{grid-template-columns:1fr;padding:22px}.grid,.six{grid-template-columns:1fr}.chart{height:280px}}
 </style>
@@ -87,31 +145,63 @@ footer{margin-top:28px;color:var(--ink3);font-size:12px}
 <div class="wrap">
   <section class="hero" id="hero"></section>
   <p class="meta" id="meta"></p>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-t="sum" aria-selected="true">한눈에 보기</button>
+    <button role="tab" data-t="sig" aria-selected="false">신호 상세</button>
+    <button role="tab" data-t="cht" aria-selected="false">경로 차트</button>
+    <button role="tab" data-t="eps" aria-selected="false">과거 바닥 22회</button>
+  </nav>
 
-  <h2>신호별 과거 바닥 vs 지금</h2>
-  <p class="sub">점 하나 = 과거 급락 바닥 1회(바닥일 포함 직전 10거래일 중 가장 극단값) · 굵은 표시 = 지금 · 점선 = 신호 기준</p>
-  <div class="grid" id="sigs"></div>
+  <section role="tabpanel" id="p-sum">
+    <h2>바닥 근접도</h2>
+    <p class="sub">9개 수급 신호가 각자 기준까지 얼마나 왔는지를 0~100점으로 모은 값입니다(100 = 9개 모두 기준 도달)</p>
+    <div class="card">
+      <div class="gauge" id="gauge"></div>
+      <div class="gscale"><span>0 평소</span><span>25</span><span>50</span><span>75</span><span>100 모든 신호 충족</span></div>
+      <div class="glegend"><span><i style="background:var(--ink)"></i>지금</span><span><i style="background:var(--down);opacity:.6"></i>과거 바닥 22회(바닥 직전 10거래일 최고점)</span><span><i style="background:color-mix(in srgb,var(--down) 28%,transparent)"></i>과거 바닥 중간 50% 구간</span></div>
+    </div>
 
-  <h2>낙폭 경로</h2>
-  <p class="sub">직전 1년 고점 = 100, 가로축은 고점 이후 거래일. 회색 점 = 과거 바닥 지점</p>
-  <div class="card">
-    <div class="legend"><span><i style="border-color:var(--ink)"></i>지금</span><span><i style="border-color:var(--ink3)"></i>과거 급락 22회</span></div>
-    <div class="chart"><canvas id="ddc"></canvas></div>
-  </div>
+    <h2>3단계 체크리스트</h2>
+    <p class="sub">과거 바닥은 대체로 ① 개인 투매 → ② 외국인 헤지 청산 → ③ 바닥 확인 순서로 신호가 켜졌습니다. 막대 = 기준까지 진행률 · 검은 세로선 = 신호 기준 · 파란 눈금 = 과거 바닥 중앙값</p>
+    <div class="stages" id="stages"></div>
 
-  <h2>바닥 전후 수급 흐름</h2>
-  <p class="sub">평소 하루치 순매수의 몇 배인지를 누적. 과거는 바닥일 = 0, 지금은 오늘 = 0으로 맞춤· 선이 오른쪽으로 내려가면 순매도, 올라가면 순매수</p>
-  <div class="card" style="margin-bottom:16px;padding:14px 22px">
-    <div class="legend" style="margin:0"><span><i style="border-color:var(--ink)"></i>지금(최근 60거래일)</span><span><i style="border-color:var(--down)"></i>과거 22회 평균</span><span><i class="band"></i>과거 22회 중간 50%</span></div>
-  </div>
-  <div class="six" id="flows"></div>
+    <h2>최근 60거래일 신호 달력</h2>
+    <p class="sub">칸 하나 = 하루. <span class="ic on" style="margin:0 2px">✓</span>충족 · <span class="ic near" style="margin:0 2px">△</span>근접(기준의 80% 이상) · 회색 = 미충족 · 빈칸 = 자료 공표 전</p>
+    <div class="card"><div class="cal" id="cal"></div></div>
 
-  <h2>과거 급락 바닥 22회</h2>
-  <p class="sub">고점 대비 -15% 이상 하락 후 앞뒤 60거래일 중 최저 종가. 켜진 신호 = 바닥 20거래일 전 ~ 5거래일 후 사이에 충족된 신호</p>
-  <div class="card tbl"><table id="eps"></table></div>
+    <h2>과거 바닥엔 몇 개가 켜졌나</h2>
+    <p class="sub">바닥 20거래일 전 ~ 5거래일 후 사이에 한 번이라도 충족된 신호 = ●. 막대 = 바닥 근접도</p>
+    <div class="card mx"><table id="mx"></table></div>
+  </section>
 
-  <h2>읽는 법</h2>
-  <div class="card notes"><ul id="notes"></ul></div>
+  <section role="tabpanel" id="p-sig" hidden>
+    <h2>신호별 과거 바닥 vs 지금</h2>
+    <p class="sub">점 하나 = 과거 급락 바닥 1회(바닥일 포함 직전 10거래일 중 가장 극단값) · 굵은 표시 = 지금 · 점선 = 신호 기준</p>
+    <div class="grid" id="sigs"></div>
+  </section>
+
+  <section role="tabpanel" id="p-cht" hidden>
+    <h2>낙폭 경로</h2>
+    <p class="sub">직전 1년 고점 = 100, 가로축은 고점 이후 거래일. 회색 점 = 과거 바닥 지점</p>
+    <div class="card">
+      <div class="legend"><span><i style="border-color:var(--ink)"></i>지금</span><span><i style="border-color:var(--ink3)"></i>과거 급락 22회</span></div>
+      <div class="chart"><canvas id="ddc"></canvas></div>
+    </div>
+    <h2>바닥 전후 수급 흐름</h2>
+    <p class="sub">평소 하루치 순매수의 몇 배인지를 누적. 과거는 바닥일 = 0, 지금은 오늘 = 0으로 맞춤 · 선이 오른쪽으로 내려가면 순매도, 올라가면 순매수</p>
+    <div class="card" style="margin-bottom:16px;padding:14px 22px">
+      <div class="legend" style="margin:0"><span><i style="border-color:var(--ink)"></i>지금(최근 60거래일)</span><span><i style="border-color:var(--down)"></i>과거 22회 평균</span><span><i class="band"></i>과거 22회 중간 50%</span></div>
+    </div>
+    <div class="six" id="flows"></div>
+  </section>
+
+  <section role="tabpanel" id="p-eps" hidden>
+    <h2>과거 급락 바닥 22회</h2>
+    <p class="sub">고점 대비 -15% 이상 하락 후 앞뒤 60거래일 중 최저 종가. 켜진 신호 = 바닥 20거래일 전 ~ 5거래일 후 사이에 충족된 신호</p>
+    <div class="card tbl"><table id="eps"></table></div>
+    <h2>읽는 법</h2>
+    <div class="card notes"><ul id="notes"></ul></div>
+  </section>
   <footer>KRX 정보데이터시스템·금융투자협회 FreeSIS 공개 통계로 계산한 참고 자료이며, 투자 권유가 아닙니다. 과거 통계는 앞으로의 결과를 보장하지 않습니다.</footer>
 </div>
 <script>
@@ -122,13 +212,60 @@ const ST={on:'충족',near:'근접',off:'미충족'};
 let D, charts=[];
 
 function hero(){
-  const n=D.now, on=D.signals.filter(s=>s.status==='on').length, near=D.signals.filter(s=>s.status==='near').length;
+  const n=D.now, S=D.summary, lit=D.signals.filter(s=>s.status==='on');
+  const cmp=S.score>=S.score_med?`과거 급락 바닥 22회의 중앙값(${S.score_med}점)을 넘었습니다`:`과거 급락 바닥 22회의 중앙값(${S.score_med}점)에 못 미칩니다`;
   document.getElementById('hero').innerHTML=`
-   <div><h1>KOSPI 바닥 수급 신호</h1><p class="lead">과거 급락 바닥 22회(2000~2025)에서 나타난 수급 조건을 지금과 같은 잣대로 비교합니다.</p></div>
+   <div><h1>KOSPI 바닥 수급 신호</h1>
+     <p class="verdict">바닥 근접도 <em>${S.score}점</em>, ${cmp}.</p>
+     <p class="lead" style="margin-top:6px">켜진 신호 ${lit.length}개${lit.length?'('+lit.map(s=>s.name).join(', ')+')':''} · 과거 바닥 무렵엔 보통 ${S.lit_med}개</p></div>
    <div class="k"><small>KOSPI${D.intraday?'<span class="ychip">장중</span>':''}</small><b class="num">${n.kospi.toLocaleString('ko-KR',{maximumFractionDigits:2})}</b><span>${D.asof}</span></div>
-   <div class="k"><small>고점 대비</small><b class="num">${f(n.dd)}%</b><span>${n.peak_d} 고점 ${n.peak.toLocaleString()} · ${n.days}거래일째 · 과거 바닥 낙폭 중앙값 ${n.dd_med}%</span></div>
-   <div class="k"><small>바닥 신호</small><b class="num">${on} / ${D.signals.length}</b><span>충족 ${on}개 · 근접 ${near}개</span></div>`;
+   <div class="k"><small>고점 대비</small><b class="num">${f(n.dd)}%</b><span>${n.peak_d} 고점 이후 ${n.days}거래일 · 과거 바닥 낙폭 중앙값 ${n.dd_med}%</span></div>
+   <div class="k"><small>바닥 근접도</small><b class="num">${S.score}<span style="display:inline;font-size:16px;color:rgba(255,255,255,.62)"> / 100</span></b><span>과거 바닥 ${Math.min(...S.score_past.map(x=>x.v))}~${Math.max(...S.score_past.map(x=>x.v))}점</span></div>`;
   document.getElementById('meta').textContent=`데이터 기준: KRX ${D.asof}${D.intraday?'(장중 집계)':''} · 금융투자협회 ${D.kofia_asof}(하루 늦게 공표) · 갱신 ${D.generated} KST`;
+}
+
+function gauge(){
+  const S=D.summary, v=S.score_past.map(x=>x.v).sort((a,b)=>a-b), q=p=>v[Math.round((v.length-1)*p)];
+  let h=`<div class="track"></div><div class="rng" style="left:${v[0]}%;width:${v[v.length-1]-v[0]}%"></div><div class="iqr" style="left:${q(.25)}%;width:${q(.75)-q(.25)}%"></div>`;
+  S.score_past.forEach(x=>h+=`<div class="pd" style="left:${x.v}%" title="${x.d} 바닥: ${x.v}점 · 켜진 신호 ${x.lit}개"></div>`);
+  h+=`<div class="medl" style="left:${S.score_med}%">과거 바닥 중앙값 ${S.score_med}</div>`;
+  h+=`<div class="nowm" style="left:${S.score}%" title="지금 ${S.score}점"></div><div class="nowl" style="left:${Math.max(4,S.score)}%">지금 ${S.score}</div>`;
+  document.getElementById('gauge').innerHTML=h;
+}
+
+const STG={1:['① 개인 투매·강제 청산','개인의 공포와 빚투 정리. 과거엔 바닥 직전에 몰렸습니다'],
+  2:['② 외국인 헤지 청산','외국인이 풋을 크게 순매도하면 바닥이 가까웠던 흔적'],
+  3:['③ 바닥 확인(후행)','주로 바닥 뒤에 켜집니다. 이걸 보고 사면 이미 반등한 뒤인 경우가 많았습니다']};
+const thTxt=s=>(s.dir==='le'?'≤ ':'≥ ')+fu(s.th,s.unit,s.unit==='z'?0:1);
+function stages(){
+  document.getElementById('stages').innerHTML=[1,2,3].map(g=>{
+    const ss=D.signals.filter(s=>s.stage===g), hit=ss.filter(s=>s.status==='on').length;
+    return `<div class="card stage"><h3>${STG[g][0]}<span class="cnt ${hit?'hit':''}">${hit} / ${ss.length}</span></h3><p>${STG[g][1]}</p>`+
+      ss.map(s=>{const w=Math.min(s.prog??0,1.5)/1.5*100, pm=s.past_prog_med==null?null:Math.min(s.past_prog_med,1.5)/1.5*100;
+        const note=s.pre===false?'직전 대량 순매도 이력이 없어 전환 조건 미성립':`과거 바닥 중앙값 ${fu(s.past_med,s.unit)}`;
+        return `<div class="row"><div class="t"><span><span class="ic ${s.status}">${s.status==='on'?'✓':s.status==='near'?'△':'–'}</span>${s.name}</span>
+          <span class="v num">${fu(s.now,s.unit)} <span style="color:var(--ink3)">/ ${thTxt(s)}</span></span></div>
+          <div class="bb" title="기준까지 ${Math.round((s.prog??0)*100)}%"><div class="fill ${s.status}" style="width:${w}%"></div><div class="thl"></div>${pm!=null?`<div class="pm" style="left:${pm}%" title="과거 바닥 중앙값 진행률 ${Math.round(s.past_prog_med*100)}%"></div>`:''}</div>
+          <small>${s.now!=null&&Math.sign(s.now-s.normal)===-Math.sign(s.th-s.normal)?'기준 반대 방향':'기준까지 '+Math.round((s.prog??0)*100)+'%'} · ${note}${s.src==='금투협'?' · '+s.now_d.slice(5)+' 기준':''}</small></div>`;}).join('')+`</div>`;}).join('');
+}
+
+function cal(){
+  const ds=D.summary.dates60, ss=D.signals.slice().sort((a,b)=>a.stage-b.stage);
+  let h='';
+  ss.forEach(s=>{h+=`<div class="nm" title="${s.name}">${s.name}</div><div class="cells">`+
+    s.st60.map((v,i)=>`<div class="c ${v==null?'x':v===2?'o':v===1?'n':''}" title="${ds[i]} ${s.name}: ${v==null?'자료 없음':['미충족','근접','충족'][v]}"></div>`).join('')+'</div>';});
+  h+=`<div></div><div class="ax"><span>${ds[0].slice(5)}</span><span>${ds[30].slice(5)}</span><span>${ds[59].slice(5)}</span></div>`;
+  document.getElementById('cal').innerHTML=h;
+}
+
+function matrix(){
+  const ss=D.signals.slice().sort((a,b)=>a.stage-b.stage), S=D.summary, sp={};S.score_past.forEach(x=>sp[x.d]=x);
+  const grp=[1,2,3].map(g=>`<th class="sg" colspan="${ss.filter(s=>s.stage===g).length}">${STG[g][0]}</th>`).join('');
+  let h=`<thead><tr><th></th>${grp}<th></th></tr><tr><th>바닥일 (낙폭)</th>${ss.map(s=>`<th>${s.name.replace(/\(.*\)| 증감| 순매수( 전환)?/g,m=>m.includes('전환')?' 전환':'')}</th>`).join('')}<th>근접도</th></tr></thead><tbody>`;
+  const row=(lab,lit,sc,cls)=>`<tr class="${cls||''}"><td>${lab}</td>${ss.map(s=>`<td><span class="dot ${lit.includes(s.name)?'on':''}" title="${s.name}"></span></td>`).join('')}<td style="text-align:left"><span class="sbar" style="width:${sc*.9}px"></span>${sc}</td></tr>`;
+  h+=row(`지금 (${f(D.now.dd)}%)`,D.signals.filter(s=>s.status==='on').map(s=>s.name),S.score,'cur');
+  D.episodes.slice().reverse().forEach(e=>h+=row(`${e.trough} (${f(e.dd)}%)`,e.lit,sp[e.trough]?.v??0));
+  document.getElementById('mx').innerHTML=h+'</tbody>';
 }
 
 function strip(s){
@@ -229,7 +366,18 @@ function notes(){
   ].map(t=>`<li>${t}</li>`).join('');
 }
 
-function render(){charts.forEach(c=>c.destroy());charts=[];hero();sigs();ddChart();flowCharts();table();notes();}
+const done={};
+function show(t){
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));
+  document.querySelectorAll('section[role=tabpanel]').forEach(p=>p.hidden=p.id!=='p-'+t);
+  if(t==='sig'&&!done.sig){sigs();done.sig=1}
+  if(t==='cht'&&!done.cht){ddChart();flowCharts();done.cht=1}
+  if(t==='eps'&&!done.eps){table();notes();done.eps=1}
+  try{history.replaceState(null,'','#'+t)}catch(e){}
+}
+function render(){charts.forEach(c=>c.destroy());charts=[];for(const k in done)delete done[k];hero();gauge();stages();cal();matrix();
+  const t=(location.hash||'#sum').slice(1);show(['sum','sig','cht','eps'].includes(t)?t:'sum');}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>show(b.dataset.t));
 fetch('data.json',{cache:'no-store'}).then(r=>r.json()).then(j=>{D=j;Chart.defaults.font.family='Pretendard,-apple-system,sans-serif';render();
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);});
 </script>

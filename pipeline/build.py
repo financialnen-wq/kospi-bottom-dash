@@ -164,6 +164,43 @@ def main():
     base = dict(days=int(state.sum()), fwd20=r(fwd20[state].mean() * 100, 1), fwd60=r(fwd60[state].mean() * 100, 1),
                 win60=r((fwd60[state] > 0).mean() * 100, 0))
 
+    # ── 한눈에 보기: 단계·진행률·종합점수 ──
+    # 진행률 = (값 - 평소값) ÷ (기준 - 평소값). 0 = 평소, 1 = 신호 기준 도달. 반대 방향이면 0.
+    # 종합점수(바닥 근접도) = 9개 진행률(0~1로 자름)의 평균 × 100 — CNN Fear&Greed 처럼 지표를 같은 척도로 모은 값.
+    STAGE = {"forced": 1, "credit": 1, "iput": 1, "pcr": 1, "fput": 2, "fspot": 3, "ffut": 3, "pension": 3, "deposit": 3}
+    NORMAL = {"forced": 1.0}
+    prog = {}
+    for (sid, *_rest), s in zip(SIG, signals):
+        ser, th = _rest[2], _rest[3]
+        nm = NORMAL.get(sid, 0.0)
+        p = ((ser - nm) / (th - nm)).clip(lower=0).ffill(limit=3)  # 금투협 지표는 공표 지연분만 이어 씀
+        prog[sid] = p
+        s["stage"] = STAGE[sid]
+        s["normal"] = nm
+        s["prog"] = r(p.iloc[-1])
+        past_p = [p.iloc[max(0, e["i"] - 9):e["i"] + 1].max() for e in ep]
+        s["past_prog_med"] = r(np.nanmedian(past_p)) if np.isfinite(past_p).any() else None
+        # 최근 60거래일 상태(2=충족 1=근접 0=미충족, null=자료 없음)
+        on_ff = on_flags[sid].where(ser.notna()).ffill(limit=3)
+        st = []
+        for i in range(n - 60, n):
+            pv = p.iloc[i]
+            st.append(None if pd.isna(pv) else 2 if on_ff.iloc[i] is True or on_ff.iloc[i] == 1 else 1 if pv >= 0.8 else 0)
+        s["st60"] = st
+        if sid in ("fspot", "ffut"):
+            pre = (fsp20 if sid == "fspot" else fut20).rolling(20).min() <= -15
+            s["pre"] = bool(pre.iloc[-1])
+    PG = pd.DataFrame(prog).clip(upper=1)
+    score = PG.mean(axis=1, skipna=True) * 100
+    lit = pd.DataFrame(on_flags).sum(axis=1)
+    score_past = [dict(d=e["trough"].strftime("%Y-%m-%d"), v=r(score.iloc[max(0, e["i"] - 9):e["i"] + 1].max(), 0),
+                       lit=int(lit.iloc[max(0, e["i"] - 20):e["i"] + 6].max())) for e in ep]
+    summary = dict(score=r(score.iloc[-1], 0), score_med=r(np.median([x["v"] for x in score_past]), 0),
+                   score_past=score_past, score_hist=[r(x, 0) for x in score.iloc[hist_from:]],
+                   lit_now=int(sum(s["status"] == "on" for s in signals)),
+                   lit_med=r(np.median([x["lit"] for x in score_past]), 0),
+                   dates60=dates[n - 60:])
+
     # 낙폭 경로: 고점=100, x=고점 이후 거래일
     pos = {d: i for i, d in enumerate(P.index)}
     paths = []
@@ -211,7 +248,7 @@ def main():
                  days=n - 1 - pos[cpk], trough_days_med=int(np.median([p["ttd"] for p in paths])),
                  dd_med=r(np.median([e["dd"] for e in ep]) * 100, 1)),
         hist_dates=dates[hist_from:], hist_kospi=[r(x) for x in k.iloc[hist_from:]],
-        signals=signals, base=base, paths=paths, cur_path=cur_path, flows=flows, episodes=rows,
+        signals=signals, base=base, summary=summary, paths=paths, cur_path=cur_path, flows=flows, episodes=rows,
     )
     with open(OUT, "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
