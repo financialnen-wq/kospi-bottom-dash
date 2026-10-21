@@ -92,9 +92,16 @@ def main(days=7):
     b = dt.date.today()
     a = b - dt.timedelta(days=days)
     A, B = a.strftime("%Y%m%d"), b.strftime("%Y%m%d")
-    for f in (krx_deriv, krx_spot):
-        f(A, B)
-    kofia((b - dt.timedelta(days=30)).strftime("%Y%m%d"), B)
+    # 출처 하나가 막혀도 나머지는 받는다(2026-10-20 KRX 타임아웃이 금투협 수집까지 건너뛰게 한 일)
+    jobs = [(krx_deriv, (A, B)), (krx_spot, (A, B)), (kofia, ((b - dt.timedelta(days=30)).strftime("%Y%m%d"), B))]
+    for f, args in jobs:
+        for attempt in (1, 2):
+            try:
+                f(*args)
+                break
+            except Exception as e:
+                print(f"{f.__name__} 실패({attempt}/2):", repr(e)[:160], flush=True)
+                time.sleep(10)
 
 
 if __name__ == "__main__":
